@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>CecOS桌面云终端</title>
+	<meta name="renderer" content="webkit">	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">	
+	<meta name="apple-mobile-web-app-capable" content="yes">	
+	<meta name="format-detection" content="telephone=no">	
+	<!-- load css -->
+	<link rel="stylesheet" type="text/css" href="{{'common/layui/css/layui.css'|staticfile}}" media="all">
+	<link rel="stylesheet" type="text/css" href="{{'css/login.css'|staticfile}}" media="all">
+</head>
+<body style="background-color: #061D2F;">
+<div class="layui-canvs" ></div>
+<div class="layui-layout layui-layout-login">
+	<h1>
+		 <strong>CecOS终端授权</strong>
+	</h1>
+	
+	<div class="cecos-form-login">
+		<div class="layui-user-icon larry-login">
+			 <input type="text" disabled="" class="login_txtbx" id='login_user' placeholder="{{uuid}}"/>
+		</div>
+		<div class="layui-pwd-icon larry-login">
+			 <input type="text" placeholder="授权码" class="login_txtbx" id='login_pass'/>
+		</div>
+		<div class="layui-submit larry-login" >
+			<input type="button" value="授权验证" class="submit_btn login_btn"/>	
+		</div>
+	</div>
+
+	
+</div>
+<div class="cecos-footer">
+	<p>请联系官方工作人员获取授权许可&nbsp;&nbsp;版权所有 © 2011-2017 OPENFANS</p>
+</div>
+<div class="cecos-system">
+	<button class="layui-btn layui-btn-small ">重启</button>
+	<button class="layui-btn layui-btn-small ">关机</button>
+</div>
+<script type="text/javascript" src="{{'common/layui/lay/dest/layui.all.js'|staticfile}}"></script>
+<script type="text/javascript">
+'use strict';
+layui.use(['jquery','layer'],function(){
+	window.jQuery = window.$ = layui.jquery;
+	layer = layui.layer;;
+//
+$(function(){
+	//登录
+	$(".login_btn").click(function(){
+		var a = $("input")[1].value;
+		if (!a) {
+			layer.tips('授权码不能为空', '#login_pass', {
+				tips: [2, '#3595CC'],
+				time: 2000
+			});
+			return false;
+		}
+		var c = opdc.start(a);
+		if (!c){
+			layer.msg('授权码错误，请联系官方获取授权码', {time: 5000,icon: 7});
+		}
+	});
+	$(document).keyup(function(event){
+		if(event.keyCode == 13){
+			$(".login_btn").trigger("click");
+		}	
+	});
+	$(".layui-btn").click(function(){
+		var a = $(this);
+		var b = a.text();
+		var index = layer.alert('您确定要'+b+'吗!!!', {
+			title :'终端盒子操作',
+			skin: 'layui-layer-molv',
+			btn: ['我确定'],
+			anim: 6
+		}, function(){
+			opdc.system(b,'','');
+			layer.close(index); 
+		});
+	});
+});
+//
+});
+</script>
+</body>
+</html>

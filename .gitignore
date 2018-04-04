@@ -1,0 +1,7 @@
+*.pyc
+*.tmp
+.project
+config.json
+/static/common/*
+/static/css/font/*
+/static/jsplug/*

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>openfans cloud desk</title>
+	<meta name="renderer" content="webkit">	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">	
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">	
+	<meta name="apple-mobile-web-app-capable" content="yes">	
+	<meta name="format-detection" content="telephone=no">	
+	<!-- load css -->
+	<link rel="stylesheet" type="text/css" href="{{'common/layui/css/layui.css'|staticfile}}" media="all">
+	<link rel="stylesheet" type="text/css" href="{{'common/global.css'|staticfile}}" media="all">
+	<link rel="stylesheet" type="text/css" href="{{'css/adminstyle.css'|staticfile}}" media="all">
+</head>
+<body>
+<div class="layui-layout layui-layout-admin" id="layui_layout">
+	<!-- 顶部区域 -->
+	<div class="layui-header header header-demo">
+		<div class="layui-main">
+			<!-- logo区域 -->
+			<div class="admin-logo-box">
+				<a class="logo"  title="logo"><img src="{{'common/images/logo.png'|staticfile}}" alt=""></a>
+				<div class="larry-side-menu">
+					<i class="fa fa-bars" aria-hidden="true"></i>
+				</div>				
+			</div>
+			<!--顶级菜单区域 -->
+			<div class="layui-larry-menu">
+				<!--<p style="margin-right:25px;">OPENFANS开源创新技术与解决方案服务商</p>-->
+				<!--<div class="layui-progress layui-progress-big cecos-range">
+					<div class="layui-progress-bar layui-bg-cyan " lay-percent="75%"></div>
+				</div>
+				<input id="cecos-range" type="range" min="0" max="100" value="5" class="layui-progress-input">-->
+			</div>
+			<!-- 右侧导航 -->
+			<ul class="layui-nav larry-header-item">
+				<li class="layui-nav-item first">
+					<a href="#" id="cecos-display"><i class="iconfont">分辨率</i>
+					</a>
+				</li>
+				<li class="layui-nav-item first">
+					<a href="#" id="cecos-reboot"><i class="iconfont">重启</i>
+					</a>
+				</li>
+				<li class="layui-nav-item">
+					<a href="#" id="cecos-shutdown"><i class="iconfont">关机</i>
+					</a>
+				</li>
+				<li class="layui-nav-item">
+					<a href="#" class="cecos-loginout"><i class="iconfont">切换用户</i></a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<!-- 左侧侧边导航开始 -->
+	<div class="layui-side layui-side-bg layui-larry-side" id="larry-side" style="left: 0px; width: 0px; ">
+		<div class="layui-side-scroll" id="larry-nav-side" >
+		<div class="user-photo">
+			<a class="img" title="我的头像" >
+				<img src="{{'images/user.png'|staticfile}}" class="userimg1"></a>
+			<p>{{login_user}}</p>
+		</div>
+		<!-- 左侧菜单 -->
+		<ul class="layui-nav layui-nav-tree">
+			<li id="cecos-all" class="layui-nav-item layui-this">
+				<a href="javascript:;" data-url="main.html">					
+					<span>&nbsp;所有机器&nbsp;&nbsp;</span>
+					<i class="layui-icon" style="font-size: 16px; ">&#xe629;</i>
+				</a>
+			</li>
+			<!-- 1 -->
+			<li id="cecos-up" class="layui-nav-item">
+				<a href="javascript:;">
+					<span>&nbsp;正在运行&nbsp;&nbsp;</span>
+					<i class="layui-icon" style="font-size: 16px; ">&#xe62c;</i>
+				</a>
+			</li>
+			<!-- 2 -->
+			<li id="cecos-down" class="layui-nav-item">
+				<a href="javascript:;">
+					<span>&nbsp;关机状态&nbsp;&nbsp;</span>
+					<i class="layui-icon" style="font-size: 16px; ">&#xe628;</i>
+				</a>
+			</li>
+			<!-- 3 -->
+			<li  class="layui-nav-item cecos-switch-li" style="display: block;">
+				<div style="padding:0 20px;">
+					<span>&nbsp;联动开关&nbsp;&nbsp;</span>					
+					{% if autoswitch is defined %}
+					<input checked="" type="checkbox" id="cecos-switch">
+					{% else %}
+					<input type="checkbox" id="cecos-switch">
+					{% endif %}
+				</div>
+			</li>
+		</ul>
+
+		</div>
+	</div>
+
+	<!-- 左侧侧边导航结束 -->
+	<!-- 右侧主体内容 -->
+	<div class="layui-body" id="larry-body" style="bottom: 0;border: solid 2px #33ACC9;left: 0px;">	
+	</div>
+	<!-- 底部区域 -->
+	<div class="layui-footer layui-larry-foot" id="larry-footer" style="left: 0px;">
+		<div class="layui-main">
+			<div class="layui-footer-center">
+				<p>主机名:<span id='cecos_hostname'>{{hostname}}</span>&nbsp;&nbsp;IP:<span id='cecos_ip'>{{ip}}</span>&nbsp;&nbsp;MAC:<span id='cecos_mac'>{{mac}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;官方网站：www.openfans.org&nbsp;&nbsp;版权所有 © 2011-2017 OPENFANS</p>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 加载js文件-->
+<script type="text/javascript" src="{{'common/layui/layui.js'|staticfile}}"></script>
+<script type="text/javascript" src="{{'js/larry.js'|staticfile}}"></script>
+<script type="text/javascript" src="{{'js/index.js'|staticfile}}"></script>
+<script type="text/javascript">
+'use strict';
+var index,cecos_list,auto_connect;
+layui.use(['jquery','layer'],function(){
+	window.jQuery = window.$ = layui.jquery;
+	layer = layui.layer;
+	
+cecos_list = function(vms){
+	var b;
+	vms = $.parseJSON(vms);
+	$.each(vms,function(b) {
+		var c = $("[name='"+b+"']");
+		if ($.isEmptyObject(vms[b])){
+			c.remove();
+			if ($('fieldset').length == 1){
+				$('.cecos-switch-li').show();
+			}else{
+				$('.cecos-switch-li').hide();
+			}
+		}
+		else if (typeof(vms[b])=='string'){
+			if (c.attr('status') != vms[b]){
+				vmchange(c,vms[b]);
+			}
+		}else{
+			addvm(vms[b],b);
+			if ($('fieldset').length == 1){
+				$('.cecos-switch-li').show();
+			}else{
+				$('.cecos-switch-li').hide();
+			}
+		}
+	});
+	if ( index != 'undefined') {
+		layer.close(index);
+	}
+
+};
+//vm status
+function vmchange(c,s) {
+	if ( !s ) return;
+	switch(s) {
+		case "up":
+			c.attr('status','up');
+			c.find(".cecos-status").html('运行中');
+			c.find(".cecos-gray").removeClass('cecos-gray');
+			c.find('button:first').addClass('cecos-gray');
+			c.find(".cecos-power").removeClass('cecos-gray');
+			break;
+		case "down":
+			c.attr('status','down');
+			c.find(".cecos-status").html('已关机');
+			c.find(".cecos-con").addClass('cecos-gray');
+			c.find('button:first').removeClass('cecos-gray');
+			if (($('fieldset').length == 1) && ($('#cecos-switch').prop('checked')==true)) {
+				opdc.system('关机','','');
+			}
+			break;
+		case "powering_up":
+			c.attr('status','powering_up');
+			c.find(".cecos-status").html('启动中');
+			c.find(".cecos-con").addClass('cecos-gray');
+			c.find('.cecos-img').removeClass('cecos-gray');
+			c.find(".cecos-power").removeClass('cecos-gray');
+			break;
+		case "powering_down":
+			c.attr('status','powering_down');
+			c.find(".cecos-status").html('关机中');
+			c.find(".cecos-con").addClass('cecos-gray');
+			c.find(".cecos-power").removeClass('cecos-gray');
+			break;
+		case "suspended":
+			c.attr('status','suspended');
+			c.find(".cecos-status").html('禁用中');
+			c.find(".cecos-con").addClass('cecos-gray');
+			break;
+		default:
+			c.attr('status','unkown');
+			c.find(".cecos-status").html('等待中');
+	}
+}
+//add vm
+function addvm(v,vmid) {
+	var html, cls1, cls2, cls3, cls4, cls5, cls6;
+	switch(v.state) {
+		case "up":
+			cls1='up';cls2='';cls3='cecos-gray';cls6='运行中';
+			break;
+		case "down":
+			cls1='down';cls2='cecos-gray';cls3='';cls6='已关机';
+			break;
+		case "powering_up":
+			cls1='powering_up';cls2='cecos-gray';cls3='cecos-gray';cls6='启动中';
+			break;
+		case "powering_down":
+			cls1='powering_down';cls2='cecos-gray';cls3='cecos-gray';cls6='关机中';
+			break;
+		case "suspended":
+			cls1='suspended';cls2='cecos-gray';cls3='cecos-gray';cls6='禁用中';
+			break;
+		default:
+			cls1='unknown';cls2='cecos-gray';cls3='cecos-gray';cls6='等待中';
+	}
+	if(v.os.indexOf("rhel") >= 0 ){
+		cls4 = "rhel";
+	}
+	else if (v.os.indexOf("sles") >= 0 ){
+		cls4 =  "sles";
+	}
+	else if (v.os.indexOf("ubuntu") >= 0 ){
+		cls4 =  "ubuntu";
+	}
+	else if (v.os.indexOf("other_linux") >= 0 ){
+		cls4 =  "linux";
+	}
+	else if (v.os.indexOf("windows") >= 0 ){
+		cls4 =  "win";
+	}
+	else {
+		cls4 = "ovirt";
+	}
+	if (v.usb==1){
+		cls5 = 'checked=""';
+	}else{
+		cls5 = '';
+	}
+	if (v.type=='vnc') {
+		v.type='VNC';
+	}else{
+		v.type='SPICE';
+	}
+	html = '<fieldset class="layui-elem-field cecos-name" status="'+cls1+'" name="'+vmid+'" style="display: block;">\
+	<legend>'+v.name+'</legend>\
+	<div class="cecos-div1">\
+		<a href="#" class="cecos-connect"><img src="{{"images/'+cls4+'.png"|staticfile}}"  class="cecos-img cecos-con '+cls2+'"><span>远程</span></a>\
+	</div>\
+	<div class="cecos-div2">\
+		<div class="cecos-info">\
+			<p>&nbsp;&nbsp;CPU:&nbsp;&nbsp;&nbsp;&nbsp;<span>'+v.cpu+'</span><span class="cecos-type">'+v.type+'</span><span class="cecos-status">'+cls6+'</span></p>\
+			<div class="layui-input-block cecos-usb">\
+				<p>&nbsp;&nbsp;MEM:&nbsp;&nbsp;<span>'+v.mem+'G</span><span class="cecos-usb-text">USB映射:</span></p>\
+				<input name="login-auto" lay-skin="primary" title="usb" '+cls5+' type="checkbox" class="cecos-checkbox">\
+			</div>\
+		</div>\
+		<div class="cecos-btn">\
+			<button class="layui-btn layui-btn-small cecos-con cecos-connect '+cls3+'">启动</button>\
+			<button class="layui-btn layui-btn-small cecos-con cecos-connect '+cls2+'">重启</button>\
+			<button class="layui-btn layui-btn-small cecos-con cecos-connect '+cls2+'">关机</button>\
+			<button class="layui-btn layui-btn-small cecos-con cecos-connect cecos-power '+cls2+'">断电</button>\
+		</div>\
+	</div>\
+	</fieldset>'
+	$('#larry-body').append(html);
+	//绑定开机关机重启
+	$("[name='"+vmid+"']").find('.cecos-connect').click(function(){
+		var a = $(this);
+		var b = a.text();
+		var c = a.parents('.cecos-name');
+		var d = c.attr('name');
+		var s = c.attr('status');
+		if (a.hasClass('cecos-gray') || a.find('img').hasClass('cecos-gray') ){
+			layer.tips("状态不符操作执行中", a, {
+				tips: [1, '#33ACC9'],
+				time: 2000
+			});
+			return;
+		}
+		var f = 0;
+		if (b == "远程" && c.find('.cecos-checkbox').prop("checked")){
+			f = 1;
+		}
+		var e = opdc.task(b, d, f);
+		if ( e ) {
+			var g = opdc.status(d);
+			layer.tips(e, a, {
+				tips: [1, '#33ACC9'],
+				time: 2000
+			});
+			if (g != s) {
+				vmchange(c,g);
+			}
+		} else {
+			switch(b) {
+				case "启动":
+					s = "powering_up";
+					break;
+				case "关机":
+					if (($('fieldset').length == 1) && ($('#cecos-switch').prop('checked')==true)) {
+						opdc.system('关机','','');
+					} 
+					s = "powering_down";
+					break;
+				case "重启":
+					s = "powering_down";
+					break;
+				case "断电":
+					s = "down";
+					break;
+				default:					
+					s = '';
+			}
+			vmchange(c,s);
+		}		
+
+	});
+	
+};
+//单台机器开机自动连接
+auto_connect=function(a){
+	if (a=='0'){
+		$("#cecos-switch").prop('checked',false);
+	}
+	else if(a=='1'){
+		$("#cecos-switch").prop('checked',true);
+	}
+	if ($('fieldset').length == 1){
+		$('#larry-body').children('[status="up"]:first').find('a').click();
+		$('#larry-body').children('[status="powering_up"]:first').find('a').click();
+		$('#larry-body').children('[status="down"]:first').find('button:first').click();
+	}
+}
+//开启自动刷新虚拟机列表
+if (typeof opdc == 'object') {
+	opdc.refresh();
+}
+
+});	
+</script>
+</body>
+<!--<ul class="layer_notice" style="display: none;float: left;height: 75px;width: 310px;overflow: hidden;background: #3595CC;padding: 10px;font-size:14px;color:#fff;line-height:25px;">
+	<li>1. 点击系统图标连接到您的机器</li>
+	<li>2. OPENFANS开源创新技术与解决方案服务商</li>
+	<li>3. 请关注CecOS微信公众号，与我们更近距离交流</li>
+</ul>-->
+</html>

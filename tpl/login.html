@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>CecOS桌面云终端</title>
+	<meta name="renderer" content="webkit">	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">	
+	<meta name="apple-mobile-web-app-capable" content="yes">	
+	<meta name="format-detection" content="telephone=no">	
+	<!-- load css -->
+	<link rel="stylesheet" type="text/css" href="{{'common/layui/css/layui.css'|staticfile}}" media="all">
+	<link rel="stylesheet" type="text/css" href="{{'css/login.css'|staticfile}}" media="all">
+</head>
+<body>
+<div class="layui-canvs" ></div>
+<div class="layui-layout layui-layout-login">
+	<h1>
+		 <strong>CecOS桌面云终端</strong>
+	</h1>
+	
+	<div class="cecos-form-login">
+		<div class="layui-user-icon larry-login">
+			 <input type="text" placeholder="账号" class="login_txtbx" id='login_user'/>
+		</div>
+		<div class="layui-pwd-icon larry-login">
+			 <input type="password" placeholder="密码" class="login_txtbx" id='login_pass'/>
+		</div>
+		<div class="layui-input-block larry-login">
+			<i class="layui-icon cecos-select-icon" >&#xe625;</i>
+			<select name="interest" lay-filter="aihao" class="login_txtbx" value="0">
+				<option value="0">自动刷新域列表</option>
+			</select>
+		</div>
+		<div class="layui-submit larry-login" >
+			<input type="button" value="立即登录" class="submit_btn login_btn" disabled=""/>	
+		</div>
+		<form class="layui-form " action="">
+			<div class="layui-input-block larry-login-auto">
+				{% if autologin is defined %}
+				<input name="login-auto" lay-skin="primary" title="自动登录" checked="" type="checkbox" class="cecos-checkbox">
+				{% else %}
+				<input name="login-auto" lay-skin="primary" title="自动登录" type="checkbox" class="cecos-checkbox">
+				{% endif %}
+			</div>
+			<div class="cecos-login-set">
+				<a href="#"><i class="layui-icon">&#xe614;</i>设置</a>
+			</div>
+		</form>
+	</div>
+
+	<div class="cecos-form-set" style="display: none;">
+		<div class="cecos-engine larry-login">
+			<input type="text" placeholder="engine.com" class="login_txtbx" value="{{server}}"/>
+		</div>
+		<div class="cecos-ip larry-login">
+			<input type="text" placeholder="openfans" class="login_txtbx" value="{{password}}" />
+		</div>
+		
+		<div class="layui-submit larry-login">
+			<input type="button" value="修改终端hosts" class="submit_btn hosts_btn" id="cecos-hosts"/>
+		</div>
+
+		<div class="layui-submit larry-login">
+			<input type="button" value="终端系统设置" class="submit_btn" id="cecos-network"/>
+		</div>
+		
+		<div class="layui-submit larry-login">
+			<input type="button" value="保存设置" class="submit_btn save_btn"/>
+		</div>
+	</div>
+	
+</div>
+<div class="cecos-footer">
+	<p>版权所有 © 2011-2017 OPENFANS</p>
+	<p>主机名:<span id='cecos_hostname'>{{hostname}}</span>&nbsp;&nbsp;IP:<span id='cecos_ip'>{{ip}}</span>&nbsp;&nbsp;MAC:<span id='cecos_mac'>{{mac}}</span></p>
+</div>
+<div class="cecos-system">
+	<button class="layui-btn layui-btn-small ">重启</button>
+	<button class="layui-btn layui-btn-small ">关机</button>
+</div>
+<script type="text/javascript" src="{{'common/layui/lay/dest/layui.all.js'|staticfile}}"></script>
+<script type="text/javascript" src="{{'js/login.js'|staticfile}}"></script>
+<script type="text/javascript" src="{{'jsplug/jparticle.jquery.js'|staticfile}}"></script>
+<script type="text/javascript">
+'use strict';
+var index,cecos_domains,cecos_login,cecos_footer;
+//
+$(function(){
+	//
+	cecos_login=function(a) {
+		if ( index ) {
+			layer.close(index);
+		}
+		if (a){
+			layer.msg(a, {time: 5000, icon:7});
+		}
+		$('.submit_btn').attr("disabled",false);
+	};
+	//
+	cecos_footer = function(a){
+		var b = a.split(',')
+		var c=$('#cecos_hostname').text(),
+		d=$('#cecos_ip').text();
+		if (c != b[0]){
+			$('#cecos_hostname').html(b[0]);
+		}
+		if (d != b[1]){
+			$('#cecos_ip').html(b[1]);
+		}
+	}
+	//
+	cecos_domains=function(a) {
+		//layer.close(index);
+		a = $.parseJSON(a);
+		$("option").remove();
+		if ($.isEmptyObject(a)){
+			layer.msg('获取的域列表为空，请联系管理员解决', {time: 5000,icon: 7});
+			return false;
+		}
+		$.each(a,function(b) {
+			var html = '<option value="'+b+'">'+a[b]+'</option>';
+			$('select').append(html);
+		});
+		if (a.length > 1){
+			layer.tips('点击可选择其他登陆域', 'select', {
+				tips: [4, '#3595CC'],
+				time: 2000
+			});
+		}
+		$('.login_btn').attr("disabled",false);
+	};
+	$(".layui-canvs").jParticle({
+		background: "#061D2F",
+		color: "#E6E6E6"
+	});
+	//登录
+	$(".login_btn").click(function(){
+		var a = $("input")[0].value;
+	 	var b = $("input")[1].value;
+		if (!a) {
+			layer.tips('用户名不能为空', '#login_user', {
+				tips: [2, '#3595CC'],
+				time: 2000
+			});
+			return false;
+		}
+		if (!b) {
+			layer.tips('密码不能为空', '#login_pass', {
+				tips: [2, '#3595CC'],
+				time: 2000
+			});
+			return false;
+		}
+		var d = $('select.login_txtbx').val();
+		var e = $('option')[d].text;
+		if (e=='自动刷新域列表'){
+			layer.msg('还没有获取到域列表', {time: 3000,icon: 7});
+			return false;
+		}
+		a += "@"+e;
+		var f = '0';
+		if ($('.cecos-checkbox').prop('checked')==true) {
+			f = '1';
+		}
+		var c = opdc.login(a,b,f);
+		index = layer.load(1, {shade: [0.1,'#fff']});
+	});
+	$(document).keyup(function(event){
+		if(event.keyCode != 13){
+			return;
+		}else if ($.find('.layui-layer-prompt') != ''){
+			return;
+		}else if ($(".cecos-form-login").css("display") == "block") {
+			$(".login_btn").trigger("click");
+		} else if ($(".cecos-form-set").css("display") == "block") {
+			$(".save_btn").trigger("click");
+		}	
+	});
+	if (typeof opdc == 'object'){
+		if ($('.cecos-checkbox').prop('checked')==true){
+			index = layer.load(1);
+			layer.msg('正在努力登录中，请稍后', {icon: 6});
+		}
+		opdc.domains();
+	}	
+});
+//
+
+</script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+@charset "utf-8";
+/*
+* @Author: Larry
+* @Date:   2016-12-15 17:20:54
+* @Last Modified by:   qinsh
+* @Last Modified time: 2016-12-20 11:16:07
+* +----------------------------------------------------------------------
+* | LarryBlogCMS [ LarryCMS网站内容管理系统 ]
+* | Copyright (c) 2016-2017 http://www.larrycms.com All rights reserved.
+* | Licensed ( http://www.larrycms.com/licenses/ )
+* | Author: qinshouwei <313492783@qq.com>
+* +----------------------------------------------------------------------
+*/
+@font-face {
+    font-family: 'adminthemesregular';
+    src: url('font/adminthemes-webfont.eot');
+    src: url('font/adminthemes-webfont.eot?#iefix') format('embedded-opentype'),
+         url('font/adminthemes-webfont.woff2') format('woff2'),
+         url('font/adminthemes-webfont.woff') format('woff'),
+         url('font/adminthemes-webfont.ttf') format('truetype'),
+         url('font/adminthemes-webfont.svg#adminthemesregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+.layui-canvs{
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	z-index: -1;
+}
+.layui-layout-login{
+    width:350px;
+    height:auto;
+    overflow:hidden;
+    margin:10% auto 0 auto;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 40px;
+    padding-bottom: 20px;
+    box-shadow:0 -15px 30px #1F98B7;
+    border-radius:5px;
+    z-index: 1000;
+}
+.layui-layout-login h1{
+	font-size:25px;
+	font-weight:bold;
+	text-align:center;
+	color:#E6E6E6;
+	text-shadow:0 0 1px #2CA5C2;
+	margin-bottom:15px;
+}
+.layui-layout-login h1 strong{
+	display:block;
+}
+.layui-layout-login h1 em{
+	display:block;
+	font-size:16px;
+	margin-top:8px;
+}
+.layui-layout-login .larry-login{
+	margin:10px 0;
+	height:42px;
+	overflow:hidden;
+	position:relative;
+}
+.larry-login .login_txtbx{
+	font-size:16px;
+	height:26px;
+/*	line-height:26px;*/
+	padding-bottom:8px;
+	padding-top:8px;
+	padding-left:10%;
+	width:90%;
+	text-indent:1em;
+	border:none;
+	background:#1F98B7;
+	color:white;
+}
+.larry-login  .login_txtbx::-webkit-input-placeholder {
+	color:#f4f4f4;
+	line-height:inherit;
+} 
+.larry-login  .login_txtbx:-moz-placeholder {
+	color:#f4f4f4;
+	line-height:inherit;
+} 
+.larry-login  .login_txtbx::-moz-placeholder {
+	color:#f4f4f4;
+	line-height:inherit;
+}
+.larry-login  .login_txtbx:focus{
+	background:#33ACC9;
+}
+.larry-login:before{
+	font-family:'adminthemesregular';
+	position:absolute;
+	top:0;
+	left:10px;
+	height:42px;
+	line-height:42px;
+	font-size:20px;
+	color:#E6E6E6;
+}
+.layui-user-icon:before{content:"u";}
+.layui-pwd-icon:before{content:"p";}
+.layui-val-icon:before{content:"n";}
+.layui-code-box{
+	width:100%;
+	height: 42px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	background:#1F98B7;
+	font-size:14px;
+	height:26px;
+	line-height:26px;
+}
+.layui-code-box input.login_txtbx{
+	width:45%;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	float: left;
+	color:white;
+	outline:none;
+	border:none;
+}
+.layui-code-box input.login_txtbx:focus{
+	font-size: 20px;
+}
+.layui-code-box  .verifyImg{
+	display: block;
+	width: 43%;
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	cursor: pointer;
+}
+.layui-submit .submit_btn{
+	width:100%;
+	height:42px;
+	border:none;
+	font-size:16px;
+	background:#1F98B7;
+	color:#f8f8f8;
+	cursor: pointer;
+}
+.submit_btn:hover{
+	background:#3595CC;
+	color:#f4f4f4;
+}
+.layui-login-text{
+	margin:10px 0;
+	height:60px;
+	overflow:hidden;
+	position:relative;
+}
+.layui-login-text p{
+	color:#33ACC9;
+	font-size:14px;
+	text-align:center;
+	margin:5px 0;
+}
+.layui-login-text a{
+	color:#33ACC9;
+	font-size:14px;
+}
+.layui-login-text a:hover{
+	text-decoration: underline;
+}
+
+.layui-input-block .login_txtbx{
+	width:100%;
+	line-height: 42px;
+	height:42px;
+	text-align:center;
+	text-indent:0em;
+  	padding:0px;
+	appearance:none;
+	-moz-appearance:none;
+	-webkit-appearance:none;
+	border-radius: 0%;	
+}
+
+.layui-input-block option {
+	height:42px;
+}
+
+.cecos-select-icon {
+	font-size: 18px;
+	color: #E6E6E6;
+	position: absolute;
+	left:7px;
+	top:10px;
+}
+
+div.larry-login-auto{
+	margin-left:10px;
+	width:30%;
+	float:left;
+	margin-top:2px;
+}
+
+div.larry-login-auto .layui-form-checkbox[lay-skin="primary"] span {
+	color: #E6E6E6;
+}
+
+
+div.larry-login-auto .layui-form-checked i {
+	background-color:#33ACC9;
+}
+
+div.cecos-footer {
+	color:#e6e6e6;
+	text-align:center;
+	margin-top:10px;
+}
+
+div.cecos-footer p{
+	margin-top:20px
+}
+
+div.cecos-system {
+	position:fixed;
+	width:120px;
+	top:0px;
+	right:0px;
+	margin-top:15px;
+}
+div.cecos-system .layui-btn + .layui-btn{
+	margin:0 auto;
+}
+
+.cecos-login-set{
+	float:right;
+	margin-top:5px;
+	margin-right:15px;
+}
+.cecos-login-set a {
+	color:#E6E6E6;
+	font-size:15px;
+}
+.cecos-login-set a:hover {
+	color:#1F98B7;
+}
+
+.cecos-form-other {
+	margin-top:10px;
+}
+
+.cecos-engine::before {
+	content: "服务器地址:";
+}
+
+.cecos-ip::before {
+	content: "管理密码:";
+}
+
+.cecos-form-set .larry-login::before{
+	font-family: Helvetica Neue,Helvetica,PingFang SC,微软雅黑,Tahoma,Arial,sans-serif;
+	font-size:16px;
+}
+
+.cecos-form-set .cecos-ip .login_txtbx, .cecos-form-set .cecos-engine .login_txtbx {
+	padding-left:25%;
+	width:75%;
+}
