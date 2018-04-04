@@ -1,0 +1,1 @@
+#python跨平台桌面云远程工具，使用了htmlPy Pyside以及ovirtsdk库，界面采用layui
